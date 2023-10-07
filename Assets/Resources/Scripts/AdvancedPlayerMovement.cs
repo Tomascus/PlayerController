@@ -9,7 +9,7 @@ public class AdvancedPlayerMovement : MonoBehaviour
     public float jumpHeight = 7f;
     public float dashSpeed = 20f;
     public float crouchHeight = .5f;
-    public LayerMask whatisGround;
+    public LayerMask whatIsGround;
     public Transform groundCheckPoint;
     public float groundCheckRadius = 0.2f;
     public AudioClip jumpSound;
@@ -32,22 +32,22 @@ public class AdvancedPlayerMovement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+   void FixedUpdate()
     {
-        grounded = Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, whatisGround);
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
-        anim.SetBool("walk", horizontalInput !=0);
+    grounded = Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, whatIsGround);   
+    
+    float horizontalInput = Input.GetAxisRaw("Horizontal");
+    body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+    anim.SetBool("walk", horizontalInput !=0);
 
-        if ((horizontalInput>0 && !facingRight)||(horizontalInput<0 && facingRight))
-        {
-            Flip();
-        }
+if((horizontalInput>0&& !facingRight)|| (horizontalInput<0 && facingRight)){
+    Flip();
+}
+if(Input.GetKey(KeyCode.Space)&&grounded)
+{
+    Jump();
+}
 
-        if (Input.GetKey(KeyCode.Space)&&grounded) 
-        {
-            Jump();
-        }
     }
 
     private void Flip()
@@ -61,7 +61,7 @@ public class AdvancedPlayerMovement : MonoBehaviour
     private void Jump()
     {
         body.velocity = new Vector2(body.velocity.x, jumpHeight);
-        anim.SetTrigger("Jump");
         grounded = false;
+        anim.SetTrigger("Jump");
     }
 }
