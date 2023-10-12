@@ -16,12 +16,17 @@ public class EnemyController : MonoBehaviour
     private int currentHealth;
     [SerializeField] private int damage = 1;
     private Rigidbody2D enemyRigidBody;
-    //private EnemySpawner spawner;
+    private EnemySpawner spawner;
     // Start is called before the first frame update
     void Awake()
     {
         enemyRigidBody = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth;
+    }
+
+    public void Initialize(EnemySpawner spawnerReference)
+    {
+        spawner = spawnerReference;
     }
 
     // Update is called once per frame
@@ -46,5 +51,29 @@ public class EnemyController : MonoBehaviour
             enemyRigidBody.velocity = movingRight ?
             new Vector2(moveSpeed, enemyRigidBody.velocity.y):
             new Vector2(-moveSpeed, enemyRigidBody.velocity.y);
+    }
+
+    public void TakeDamage(int damageAmount) 
+    {
+        currentHealth = damageAmount;
+        if(currentHealth<=0)
+        {
+            Die();
+        }
+    }
+
+    public void Die() 
+    {
+        if(spawner!=null)
+        {
+            spawner.EnemyDied();
+        }
+
+        Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        
     }
 }
