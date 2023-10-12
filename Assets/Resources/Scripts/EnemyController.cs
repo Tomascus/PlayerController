@@ -55,7 +55,7 @@ public class EnemyController : MonoBehaviour
 
     public void TakeDamage(int damageAmount) 
     {
-        currentHealth = damageAmount;
+        currentHealth -= damageAmount;
         if(currentHealth<=0)
         {
             Die();
@@ -74,6 +74,10 @@ public class EnemyController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        AdvancedPlayerMovement player = collision.gameObject.GetComponent<AdvancedPlayerMovement>();
+        if(player != null)
+        {
+            Debug.Log("Player took damage!");
+        }
     }
 }
