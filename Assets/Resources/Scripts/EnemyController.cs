@@ -15,6 +15,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private int maxHealth = 5;
     private int currentHealth;
     [SerializeField] private int damage = 1;
+    private bool canChangeDirection;
     private Rigidbody2D enemyRigidBody;
     private EnemySpawner spawner;
     // Start is called before the first frame update
@@ -43,14 +44,24 @@ public class EnemyController : MonoBehaviour
 
             bool isGrounded = Physics2D.Raycast(groundCheckPosition, Vector2.down, groundCheckDistance, whatIsGround);
 
+
+
             if(!isGrounded)
             {
                 movingRight = !movingRight;
+                StartCoroutine(DelayDirectionChange());
             }
 
             enemyRigidBody.velocity = movingRight ?
             new Vector2(moveSpeed, enemyRigidBody.velocity.y):
             new Vector2(-moveSpeed, enemyRigidBody.velocity.y);
+    }
+
+    IEnumerator DelayDirectionChange()
+    {
+      canChangeDirection = false;
+      yield return new WaitForSeconds(0.5f); 
+      canChangeDirection = true; 
     }
 
     public void TakeDamage(int damageAmount) 

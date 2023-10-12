@@ -112,7 +112,7 @@ else if(Input.GetKeyDown(KeyCode.Space) && canDoubleJump)
     {
         body.velocity = new Vector2(body.velocity.x, jumpHeight);
         grounded = false;
-        anim.SetTrigger("Jump");
+        anim.SetTrigger("jump");
         PlaySound(jumpSound);
     }
 
