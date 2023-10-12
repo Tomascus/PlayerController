@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class AdvancedPlayerMovement : MonoBehaviour
 {
 
@@ -17,7 +19,7 @@ public class AdvancedPlayerMovement : MonoBehaviour
     public AudioClip footstepSound;
     private Rigidbody2D body;
     public Animator anim;
-    private AudioSource audioSource;
+    private AudioSource audio;
     private bool grounded;
     private bool canDoubleJump = false;
     private bool isDashing = false;
@@ -28,7 +30,7 @@ public class AdvancedPlayerMovement : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();        
-        audioSource = GetComponent<AudioSource>();
+        audio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -40,15 +42,54 @@ public class AdvancedPlayerMovement : MonoBehaviour
     body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
     anim.SetBool("walk", horizontalInput !=0);
 
+if(horizontalInput != 0 && grounded) {
+    PlaySound(footstepSound);
+}
+
+
+if(Input.GetKeyDown(KeyCode.LeftShift) && !isDashing)
+{
+    StartCoroutine(Dash());
+}
+
+if(Input.GetKeyDown(KeyCode.LeftControl) && grounded)
+{
+    if(!isCrouching)
+    {
+        transform.localScale = new Vector3(transform.localScale.x, crouchHeight, transform.localScale.z);
+        isCrouching = true;
+    } 
+
+else if(isCrouching)
+{
+    transform.localScale = new Vector3(transform.localScale.x, 1f, transform.localScale.z);
+    isCrouching = false;
+}
+
+
+}
+
 if((horizontalInput>0&& !facingRight)|| (horizontalInput<0 && facingRight)){
     Flip();
 }
 if(Input.GetKey(KeyCode.Space)&&grounded)
 {
     Jump();
+    canDoubleJump = true;
+}
+
+else if(Input.GetKeyDown(KeyCode.Space) && canDoubleJump)
+{
+    Jump();
+    canDoubleJump = false;
 }
 
     }
+
+    private void PlaySound(AudioClip clip) {
+    audio.clip = clip;
+    audio.Play();
+}
 
     private void Flip()
     {
@@ -63,5 +104,18 @@ if(Input.GetKey(KeyCode.Space)&&grounded)
         body.velocity = new Vector2(body.velocity.x, jumpHeight);
         grounded = false;
         anim.SetTrigger("Jump");
+        PlaySound(jumpSound);
     }
+
+    IEnumerator Dash()
+    {
+        PlaySound(dashSound);
+        float originalSpeed = speed;
+        speed = dashSpeed;
+        isDashing = true;
+        yield return new WaitForSeconds(0.2f);
+        speed = originalSpeed;
+        isDashing = false;
+    }
+
 }
