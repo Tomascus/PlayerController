@@ -7,20 +7,31 @@ using UnityEngine;
 public class AdvancedPlayerMovement : MonoBehaviour
 {
 
+    [Header("Player Settings")]
     public float speed = 10f;
     public float jumpHeight = 7f;
     public float dashSpeed = 20f;
     public float crouchHeight = .5f;
+
+    [Header("Ground Check")]
+
     public LayerMask whatIsGround;
     public Transform groundCheckPoint;
     public float groundCheckRadius = 0.2f;
+
+    [Header("Sounds")]
+
     public AudioClip jumpSound;
     public AudioClip dashSound;
     public AudioClip footstepSound;
 
+    [Header("Attack")]
+
     [SerializeField] private int attackDamage = 1;
     [SerializeField] private float attackRange = 1f;
     public LayerMask enemyLayers;
+
+
     private Rigidbody2D body;
     public Animator anim;
     private AudioSource audio;
@@ -32,11 +43,16 @@ public class AdvancedPlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
+        InitializeComponents();
+    }
+
+
+    private void InitializeComponents()
+    {
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();        
         audio = GetComponent<AudioSource>();
     }
-
     // Update is called once per frame
    void FixedUpdate()
     {
@@ -115,6 +131,23 @@ else if(Input.GetKeyDown(KeyCode.Space) && canDoubleJump)
         anim.SetTrigger("jump");
         PlaySound(jumpSound);
     }
+
+    /*private void HandleMovement()
+    {
+
+    }
+
+    private void HandleJump()
+    {
+
+    }
+
+    private void HandleDash() 
+    {
+
+    }*/
+
+
 
     IEnumerator Dash()
     {
