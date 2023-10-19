@@ -33,6 +33,18 @@ public class GameManager : MonoBehaviour
         {
             if(isPaused)
             ResumeGame();
+            else
+            PauseGame();
+        } 
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            RestartGame();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            LoadMainMenu();
         }
     }
 
@@ -42,6 +54,14 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
         //this is where youd put your pause menu
     }
+
+
+    //WE CAN ADD SLOW MO
+    /*public void SlowMo()
+    {
+        slowMo = true;
+        Time.timeScale = .1f;
+    }*/
 
     public void ResumeGame()
     {
