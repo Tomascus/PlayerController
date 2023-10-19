@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class AdvancedPlayerMovement : MonoBehaviour
 {
 
@@ -19,12 +20,6 @@ public class AdvancedPlayerMovement : MonoBehaviour
     public Transform groundCheckPoint;
     public float groundCheckRadius = 0.2f;
 
-    [Header("Sounds")]
-
-    public AudioClip jumpSound;
-    public AudioClip dashSound;
-    public AudioClip footstepSound;
-
     [Header("Attack")]
 
     [SerializeField] private int attackDamage = 1;
@@ -34,7 +29,6 @@ public class AdvancedPlayerMovement : MonoBehaviour
 
     private Rigidbody2D body;
     public Animator anim;
-    private AudioSource audio;
     private bool grounded;
     private bool canDoubleJump = false;
     private bool isDashing = false;
@@ -51,7 +45,6 @@ public class AdvancedPlayerMovement : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();        
-        audio = GetComponent<AudioSource>();
     }
     // Update is called once per frame
    void FixedUpdate()
@@ -63,7 +56,7 @@ public class AdvancedPlayerMovement : MonoBehaviour
     anim.SetBool("walk", horizontalInput !=0);
 
 if(horizontalInput != 0 && grounded) {
-    PlaySound(footstepSound);
+    AudioManager.instance.PlayFootstepSound();
 }
 
 
@@ -111,10 +104,6 @@ else if(Input.GetKeyDown(KeyCode.Space) && canDoubleJump)
 
     }
 
-    private void PlaySound(AudioClip clip) {
-    audio.clip = clip;
-    audio.Play();
-}
 
     private void Flip()
     {
@@ -129,7 +118,7 @@ else if(Input.GetKeyDown(KeyCode.Space) && canDoubleJump)
         body.velocity = new Vector2(body.velocity.x, jumpHeight);
         grounded = false;
         anim.SetTrigger("jump");
-        PlaySound(jumpSound);
+        AudioManager.instance.PlayJumpSound();
     }
 
     /*private void HandleMovement()
@@ -151,7 +140,7 @@ else if(Input.GetKeyDown(KeyCode.Space) && canDoubleJump)
 
     IEnumerator Dash()
     {
-        PlaySound(dashSound);
+        AudioManager.instance.PlayDashSound();
         float originalSpeed = speed;
         speed = dashSpeed;
         isDashing = true;
@@ -170,6 +159,7 @@ else if(Input.GetKeyDown(KeyCode.Space) && canDoubleJump)
             {
                 enemyController.TakeDamage(attackDamage);
                 Debug.Log("Enemy Damaged!");
+                AudioManager.instance.PlayAttackSound();
             }
         }
     }
